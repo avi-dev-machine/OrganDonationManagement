@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeLink - Organ Donation Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0a192f;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        #canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: url('/mnt/data/istockphoto-1422220565-640x640.jpg') no-repeat center center;
+        background-size: cover;
+    }
+
+        nav {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 25, 47, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #64ffda;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .login-btn {
+            background: transparent;
+            color: #64ffda;
+            border: 1px solid #64ffda;
+        }
+
+        .login-btn:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .get-started-btn {
+            background: #64ffda;
+            color: #0a192f;
+        }
+
+        .get-started-btn:hover {
+            background: #5ce6c4;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 0 10%;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            animation: fadeIn 1s ease-out;
+            text-align: center;
+        }
+
+        .stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 3rem;
+            justify-content: center;
+        }
+
+        .stat-item {
+            text-align: center;
+            animation: slideUp 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.3s; }
+        .stat-item:nth-child(2) { animation-delay: 0.6s; }
+        .stat-item:nth-child(3) { animation-delay: 0.9s; }
+
+        .stat-number {
+            font-size: 2.5rem;
+            color: #64ffda;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #8892b0;
+            margin-top: 0.5rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        p {
+            color: #8892b0;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .feedback-section {
+            overflow: hidden; /* Hide overflow */
+            position: relative; /* Position relative for absolute children */
+            width: 100%; /* Full width */
+        }
+
+        .feedback-container {
+            display: flex; /* Flexbox for horizontal alignment */
+            animation: scrollFeedbacks 15s linear infinite; /* Animation for scrolling */
+        }
+
+        .feedback-box {
+            flex: 0 0 auto; /* Prevent flex shrinking */
+            width: 300px; /* Fixed width for boxes */
+            background: #112240;
+            padding: 1.5rem;
+            border-radius: 8px;
+            min-height: 200px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin-right: 20px; /* Space between boxes */
+            color: #8892b0;
+}
+
+/* Continuous scrolling animation */
+@keyframes scrollFeedbacks {
+    0% {
+        transform: translateX(0); /* Start position */
+    }
+    100% {
+        transform: translateX(-100%); /* End position (fully scrolled) */
+    }
+}
+
+
+
+        /* For better mobile experience */
+        @media (max-width: 768px) {
+            .feedback-container {
+                padding: 0;
+            }
+
+            .feedback-box {
+                width: 250px;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 25, 47, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #112240;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #8892b0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #8892b0;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #233554;
+            background: #0a192f;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: #64ffda;
+            color: #0a192f;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #112240;
+            padding: 2rem 0;
+            color: #8892b0;
+            text-align: center;
+            margin-top: 5rem;
+        }
+
+        footer a {
+            color: #64ffda;
+            text-decoration: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                padding: 0 5%;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .feedback-section {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            footer {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <nav>
+        <div class="logo">LifeLink</div>
+        <div class="nav-links">
+            <button class="nav-btn login-btn" onclick="showModal()">Login</button>
+            <button class="nav-btn get-started-btn">Get Started</button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Connecting Lives Through Technology</h1>
+            <p>Join our innovative platform that's revolutionizing organ donation matching using advanced AI technology. Together, we can save more lives.</p>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" data-target="1000">0</div>
+                    <div class="stat-label">Successful Matches</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="500">0</div>
+                    <div class="stat-label">Partner Hospitals</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" data-target="98">0</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <!-- Feedback Section -->
+   <div class="feedback-section">
+    <div class="feedback-container">
+        <div class="feedback-box">
+            <p>"LifeLink helped us connect with the right donors quickly. It’s a lifesaver!"</p>
+            <span>- John D.</span>
+        </div>
+        <div class="feedback-box">
+            <p>"A truly seamless experience for both patients and doctors. Highly recommend!"</p>
+            <span>- Emily R.</span>
+        </div>
+        <div class="feedback-box">
+            <p>"LifeLink made organ donation a seamless experience. Truly life-changing!"</p>
+            <span>- Sarah T.</span>
+        </div>
+        <div class="feedback-box">
+            <p>"The platform is incredibly easy to use, and it works. I am forever grateful!"</p>
+            <span>- Mark P.</span>
+        </div>
+        <div class="feedback-box">
+            <p>"LifeLink is a great initiative to save lives. I trust it for all my patients."</p>
+            <span>- Dr. Lisa W.</span>
+        </div>
+        <div class="feedback-box">
+            <p>"A platform that truly saves lives. Efficient and reliable!"</p>
+            <span>- Sam G.</span>
+        </div>
+        <div class="feedback-box">
+            <p>"LifeLink made a huge difference in our donation process. Highly efficient!"</p>
+            <span>- Alex J.</span>
+        </div>
+        <div class="feedback-box">
+            <p>"I recommend LifeLink to everyone in the medical community!"</p>
+            <span>- Dr. Emily K.</span> 
+        </div>
+    </div>
+</div>
+
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="hideModal()">&times;</span>
+            <h2 style="margin-bottom: 1.5rem; color: #64ffda;">Welcome Back</h2>
+            <form>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="submit-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 LifeLink. All rights reserved.</p>
+        <p>Contact us: <a href="mailto:contact@lifelink.com">contact@lifelink.com</a></p>
+    </footer>
+
+    <script>
+        // Three.js Animation
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // Create particles
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        const particleCount = 5000;
+
+        for (let i = 0; i < particleCount; i++) {
+            vertices.push(
+                Math.random() * 2000 - 1000,
+                Math.random() * 2000 - 1000,
+                Math.random() * 2000 - 1000
+            );
+        }
+
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+        const material = new THREE.PointsMaterial({
+            color: 0x64ffda,
+            size: 2,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particles = new THREE.Points(geometry, material);
+        scene.add(particles);
+
+        camera.position.z = 1000;
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.x += 0.0003;
+            particles.rotation.y += 0.0003;
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+
+        // Modal functions
+        function showModal() {
+            document.getElementById('loginModal').style.display = 'block';
+        }
+
+        function hideModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('loginModal');
+            if (event.target == modal) {
+                hideModal();
+            }
+        }
+        const counters = document.querySelectorAll('.stat-number');
+
+        function countUp(element) {
+            const target = +element.getAttribute('data-target');
+            const count = setInterval(() => {
+                const current = +element.innerText;
+                const increment = target / 100;
+
+                if (current < target) {
+                    element.innerText = Math.ceil(current + increment);
+                } else {
+                    element.innerText = target;
+                    clearInterval(count);
+                }
+            }, 20); // Adjust the speed here
+        }
+
+        // Trigger the counting animation when the element is in view
+        function checkInView() {
+            const statsSection = document.querySelector('.stats');
+            const rect = statsSection.getBoundingClientRect();
+            if (rect.top < window.innerHeight && rect.bottom >= 0) {
+                counters.forEach(counter => {
+                    countUp(counter);
+                });
+                window.removeEventListener('scroll', checkInView); // Remove event listener after animation starts
+            }
+        }
+
+        window.addEventListener('scroll', checkInView); // Listen for scrolling to trigger animation
+
+        // Initial check in case the section is already in view when the page loads
+        checkInView();
+
+        
+    </script>
+</body>
+</html>
