@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priority Dashboard</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a192f, #112240);
+            color: #fff;
+            line-height: 1.6;
+            margin: 0 auto;
+            padding: 20px;
+            max-width: 1200px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #64ffda;
+            border-bottom: 2px solid #64ffda;
+            padding-bottom: 10px;
+        }
+        table a {
+            color: white; /* Normal state color */
+            text-decoration: none; /* Remove underline */
+            transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+            padding: 5px 10px; /* Add some padding */
+            border-radius: 5px; /* Rounded corners */
+        }
+        
+        table a:hover {
+            color: #64ffda; /* Change color on hover */
+            background-color: rgba(100, 255, 218, 0.2); /* Light background on hover */
+            text-shadow: 0 0 5px rgba(100, 255, 218, 0.5); /* Add text shadow */
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            background: rgba(17, 34, 64, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        form label {
+            font-weight: bold;
+            color: #64ffda;
+        }
+
+        form select, form input, form button {
+            padding: 10px;
+            border: 1px solid #64ffda;
+            border-radius: 8px;
+            background-color: rgba(10, 25, 47, 0.8);
+            color: #64ffda;
+            transition: all 0.3s ease;
+        }
+
+        form select:focus, form input:focus {
+            outline: none;
+            border-color: #64ffda;
+            box-shadow: 0 0 5px #64ffda;
+        }
+
+        form button {
+            cursor: pointer;
+            background-color: rgba(10, 25, 47, 0.9);
+            position: relative;
+            overflow: hidden;
+            font-weight: bold;
+        }
+
+        form button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.4), transparent);
+            transition: all 0.5s ease;
+        }
+
+        form button:hover::before {
+            left: 0;
+        }
+
+        form button:hover {
+            box-shadow: 0 0 10px #64ffda;
+        }
+
+        table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+            background: rgba(17, 34, 64, 0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        table th, table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid rgba(100, 255, 218, 0.1);
+        }
+
+        table th {
+            background: rgba(10, 25, 47, 0.9);
+            color: #64ffda;
+        }
+
+        table tr:nth-child(even) {
+            background: rgba(17, 34, 64, 0.5);
+        }
+
+        table tr:hover {
+            background: rgba(17, 34, 64, 0.8);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: rgba(10, 25, 47, 0.9);
+            color: #64ffda;
+            text-decoration: none;
+            border: 1px solid #64ffda;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.4), transparent);
+            transition: all 0.5s ease;
+        }
+
+        .btn:hover::before {
+            left: 0;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 10px #64ffda;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        .modal .close-btn {
+            float: right;
+            cursor: pointer;
+            color: red;
+            font-weight: bold;
+        }
+
+        .modal-content {
+            color: black;
+        }
+
+        @media (max-width: 768px) {
+            form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            select, input, button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+    <script>
+        function showModal(donorId, contactDetails) {
+            const modal = document.getElementById('modal');
+            const overlay = document.getElementById('modal-overlay');
+
+            modal.querySelector('.modal-content').innerHTML = `
+                <strong>Contact Details:</strong><br>
+                ${contactDetails}
+            `;
+
+            modal.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.getElementById('modal-overlay').style.display = 'none';
+        }
+    </script>
+</head>
+<body>
+    <h1>Priority Dashboard for {{ recipient_name }}</h1>
+
+    <!-- Sorting and Filtering Form -->
+    <form method="POST">
+        <label for="sort_by">Sort By:</label>
+        <select name="sort_by" id="sort_by">
+            <option value="compatibility_score">Compatibility Score</option>
+            <option value="distance">Distance</option>
+            <option value="urgency_score">Urgency Score</option>
+        </select>
+
+        <label for="min_score">Min Compatibility Score:</label>
+        <input type="number" step="0.1" name="min_score" id="min_score" value="{{ min_score }}">
+
+        <label for="max_distance">Max Distance:</label>
+        <input type="number" step="0.1" name="max_distance" id="max_distance" value="{{ max_distance }}">
+
+        <button type="submit">Apply</button>
+    </form>
+
+    <!-- Matches Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Donor Name</th>
+                <th>Organ</th>
+                <th>Compatibility Score</th>
+                <th>Urgency Score</th>
+                <th>Distance</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in results %}
+                <tr>
+                    <td>
+                        <a href="/card/{{ result.donor_id }}">
+                            {{ result.donor_name }}
+                        </a>
+                    </td>
+                    <td>{{ result.organ }}</td>
+                    <td>{{ result.compatibility_score }}</td>
+                    <td>{{ result.urgency_score }}</td>
+                    <td>{{ result.distance }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/map-matches/{{ recipient_id }}" class="btn">View Matches on Map</a>
+
+    <!-- Modal and Overlay -->
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal()"></div>
+    <div id="modal" class="modal">
+        <span class="close-btn" onclick="closeModal()">X</span>
+        <div class="modal-content"></div>
+    </div>
+</body>

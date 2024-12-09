@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Life Key Donor Card</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+        }
+        .id-card {
+            width: 450px;
+            height: 280px;
+            background-color: #112240;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .watermark {
+    position: absolute;
+    top: 115px; /* Adjust to align with user details */
+    left: 200px; /* Align it within the details section */
+    font-size: 55px; /* Slightly larger for visibility */
+    color: rgba(255, 255, 255, 0.308); /* Softer opacity to not interfere with readability */
+    font-weight: bold;
+    transform: rotate(-30deg); /* Adjust the rotation for better fit */
+    pointer-events: none; /* Ensure it's not interactive */
+    z-index: 0; /* Keep it behind the text */
+}
+
+        .blue-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background-color:rgba(100, 255, 218, 0.9);
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+        }
+        .bottom-blue-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background-color:rgba(100, 255, 218, 0.9);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+        .bottom-text {
+            white-space: nowrap;
+            animation: scrollText 10s linear infinite;
+            color: white;
+            font-size: 12px;
+        }
+        @keyframes scrollText {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .header-text {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .profile-photo {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    width: 150px;
+    height: 150px; /* Adjusted to keep it a perfect circle */
+    border-radius: 50%; /* Makes the box circular */
+    border: 3px solid rgba(100, 255, 218, 0.9);;
+    background-color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Ensures the image stays within the circular container */
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image fills the circle without distortion */
+    border-radius: 50%; /* Ensures the image itself is also circular */
+}
+
+        .details {
+    position: absolute;
+    top: 60px;
+    left: 190px;
+    width: 230px; /* Set width to prevent overflow */
+    color: white;
+    font-family: 'Segoe UI', Verdana, sans-serif; /* Modern font style */
+    line-height: 1.2; /* Compact line spacing */
+}
+
+.name {
+    font-size: 22px; /* Slightly reduced for better fit */
+    color: rgba(100, 255, 218, 0.9);;
+    font-weight: bold;
+    margin-bottom: 6px;
+    overflow-wrap: break-word; /* Ensure long names wrap */
+}
+
+.title {
+    font-size: 14px; /* Adjusted for better proportion */
+    margin-bottom: 6px;
+    overflow-wrap: break-word;
+}
+
+.id-number {
+    font-size: 12px; /* Kept smaller for secondary information */
+    color: #aaa;
+    margin-bottom: 12px;
+}
+
+.contact-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two-column layout */
+    gap: 8px; /* Reduced gap for tighter fit */
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    font-size: 12px; /* Reduced for compactness */
+}
+
+.contact-item i {
+    color:rgba(100, 255, 218, 0.9);;
+    width: 20px;
+    margin-right: 6px;
+    text-align: center;
+}
+
+
+        .geometric-accent {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, transparent 50%, rgba(33,150,243,0.2) 50%);
+            transform: rotate(45deg) translate(40%, 40%);
+        }
+        .company-logo {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2196F3 25%, #c0c0c0 25%, #c0c0c0 50%, rgba(100, 255, 218, 0.9); 50%, #2196F3 75%, #c0c0c0 75%);
+            background-size: 20px 20px;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="id-card">
+        <div class="watermark">Life Link</div>
+        <div class="blue-bar">
+            <span class="header-text">LIFE KEY</span>
+        </div>
+        
+        <div class="profile-photo">
+            <img src="https://i.pinimg.com/736x/0a/81/da/0a81daf7ff6307104b2f95901383d111.jpg" alt="Profile Photo">
+        </div>
+        
+        <div class="details">
+            <div class="name">{{ full_name }}</div>
+            <div class="title">Organ Donor</div>
+            <div class="id-number">Blood Type: {{ blood_type }}</div>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    {{ email }}
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-heart"></i>
+                    Organ: {{ organ }}
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-birthday-cake"></i>
+                    Age: {{ age }}
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    {{ longitude }}° E, {{ latitude }}° N
+                </div>
+            </div>
+        </div>
+        
+        <div class="geometric-accent"></div>
+        <div class="company-logo"></div>
+        
+        <div class="bottom-blue-bar">
+            <div class="bottom-text">
+                Life Link • Life Link • Life Link • Life Link • Life Link • Life Link • Life Link • Life Link
+            </div>
+        </div>
+    </div>
+</body>
+</html>
